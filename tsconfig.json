@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // "lib" tells the compiler which built-in library files to include.
+    // Here, we're including the ECMAScript 6 standard library.
+    "lib": ["es6"],
+    // "target" specifies the JavaScript language version to compile to.
+    // "es6" means the output will be ECMAScript 2015.
+    "target": "es6",
+    // "module" determines the module system used in the output.
+    // "commonjs" is widely used in Node.js environments.
+    "module": "commonjs",
+    // "outDir" is the directory where the compiled JavaScript files will be placed.
+    "outDir": "dist",
+    // "noImplicitAny" raises errors for expressions and declarations with an implicit "any" type,
+    // helping catch potential type issues early.
+    "noImplicitAny": true,
+    // "removeComments" removes comments from the output code.
+    "removeComments": true,
+    // "preserveConstEnums" keeps the const enums in the output instead of inlining them,
+    // which can be useful for debugging.
+    "preserveConstEnums": true,
+    // "sourceMap" generates corresponding '.map' files,
+    // which help in debugging by mapping the transpiled code back to the original TypeScript.
+    "sourceMap": true,
+    // "emitDecoratorMetadata" emits design-type metadata for decorated declarations,
+    // required by frameworks that use dependency injection.
+    "emitDecoratorMetadata": true,
+    // "experimentalDecorators" enables experimental support for decorators,
+    // allowing you to use the decorator syntax in your code.
+    "experimentalDecorators": true,
+    "esModuleInterop": true
+  }
+}
