@@ -2,7 +2,7 @@
 import { FastifyInstance } from "fastify";
 import { Server as IOServer, Socket } from "socket.io";
 import { socketAuthMiddleware } from "../middleware/socketAuth";
-import config from "../config/config";
+import corsConfig from "../config/corsConfig";
 
 /**
  * Socket.io plugin for Fastify with authentication and request tracking.
@@ -10,12 +10,10 @@ import config from "../config/config";
  * @param fastify - Fastify instance
  */
 export default async function socketPlugin(fastify: FastifyInstance) {
+  const env = (process.env.NODE_ENV as keyof typeof corsConfig) || "dev";
   // Create a new Socket.io instance attached to Fastify's underlying HTTP server.
   const io = new IOServer(fastify.server, {
-    cors:
-      process.env.NODE_ENV === "production"
-        ? config.cors.production
-        : config.cors.development,
+    cors: corsConfig[env],
     // connectTimeout (Default: 45000ms)
     // Specifies how long (in ms) the client has to establish a connection before being considered as failed.
     // Recommended value: 5000ms (5s)

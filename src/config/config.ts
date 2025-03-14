@@ -12,19 +12,7 @@ export default {
     host: process.env.HOST || "0.0.0.0",
   },
 
-  // CORS configuration
-  cors: {
-    development: {
-      origin: process.env.CORS_ORIGIN || "http://localhost:5173",
-      methods: ["GET", "POST"],
-      credentials: true,
-    },
-    production: {
-      origin: process.env.CORS_ORIGIN || "http://localhost:5173",
-      methods: ["GET", "POST"],
-      credentials: true,
-    },
-  },
+
 
   // AWS configuration
   aws: {
