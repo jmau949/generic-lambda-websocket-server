@@ -20,7 +20,10 @@
   },
   "homepage": "https://github.com/jmau949/generic-fastify-websocket-server#readme",
   "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.758.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.758.0",
+    "@aws-sdk/client-dynamodb": "^3.767.0",
+    "@aws-sdk/lib-dynamodb": "^3.767.0",
     "@fastify/aws-lambda": "^5.1.4",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.0.0",

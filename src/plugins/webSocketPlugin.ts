@@ -118,9 +118,8 @@ export default async function socketPlugin(fastify: FastifyInstance) {
   });
 
   // Register a hook to clean up on server shutdown
-  fastify.addHook("onClose", async (instance, done) => {
-    // In a real implementation, you might want to notify clients
-    // or perform cleanup operations
+  fastify.addHook("onClose", (instance, done) => {
+    // io.close();
     done();
   });
 }

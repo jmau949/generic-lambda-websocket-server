@@ -1,19 +1,25 @@
 // services/dynamoDbClient.ts
 // Purpose: Low-level DynamoDB operations - a generic client abstraction
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
   GetCommand,
+  GetCommandInput,
   PutCommand,
+  PutCommandInput,
   DeleteCommand,
+  DeleteCommandInput,
   QueryCommand,
+  QueryCommandInput,
   UpdateCommand,
+  UpdateCommandInput,
   ScanCommand,
+  ScanCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import config from "../config/config";
-
+import { ReturnValue } from "@aws-sdk/client-dynamodb";
 // Initialize DynamoDB client with configuration
-const dynamoOptions = {
+const dynamoOptions: DynamoDBClientConfig = {
   region: config.aws.region,
 };
 
@@ -43,15 +49,18 @@ export default {
    * @param key - The key object (must include the partition key)
    * @returns The item or undefined if not found
    */
-  async getItem(tableName: string, key: Record<string, any>) {
-    const params = {
+  async getItem<T = Record<string, any>>(
+    tableName: string,
+    key: Record<string, any>
+  ): Promise<T | undefined> {
+    const params: GetCommandInput = {
       TableName: tableName,
       Key: key,
     };
 
     const command = new GetCommand(params);
     const result = await dynamoDbClient.send(command);
-    return result.Item;
+    return result.Item as T | undefined;
   },
 
   /**
@@ -61,7 +70,7 @@ export default {
    * @returns The result of the put operation
    */
   async putItem(tableName: string, item: Record<string, any>) {
-    const params = {
+    const params: PutCommandInput = {
       TableName: tableName,
       Item: item,
     };
@@ -77,7 +86,7 @@ export default {
    * @returns The result of the delete operation
    */
   async deleteItem(tableName: string, key: Record<string, any>) {
-    const params = {
+    const params: DeleteCommandInput = {
       TableName: tableName,
       Key: key,
     };
@@ -94,13 +103,18 @@ export default {
    * @param options - Additional query options
    * @returns The query results
    */
-  async query(
+  async query<T = Record<string, any>>(
     tableName: string,
     keyConditionExpression: string,
     expressionAttributeValues: Record<string, any>,
-    options: Record<string, any> = {}
-  ) {
-    const params = {
+    options: Partial<
+      Omit<
+        QueryCommandInput,
+        "TableName" | "KeyConditionExpression" | "ExpressionAttributeValues"
+      >
+    > = {}
+  ): Promise<T[]> {
+    const params: QueryCommandInput = {
       TableName: tableName,
       KeyConditionExpression: keyConditionExpression,
       ExpressionAttributeValues: expressionAttributeValues,
@@ -109,7 +123,7 @@ export default {
 
     const command = new QueryCommand(params);
     const result = await dynamoDbClient.send(command);
-    return result.Items || [];
+    return (result.Items || []) as T[];
   },
 
   /**
@@ -121,25 +135,34 @@ export default {
    * @param options - Additional update options
    * @returns The result of the update operation
    */
-  async updateItem(
+  async updateItem<T = Record<string, any>>(
     tableName: string,
     key: Record<string, any>,
     updateExpression: string,
     expressionAttributeValues: Record<string, any>,
-    options: Record<string, any> = {}
-  ) {
-    const params = {
+    options: Partial<
+      Omit<
+        UpdateCommandInput,
+        | "TableName"
+        | "Key"
+        | "UpdateExpression"
+        | "ExpressionAttributeValues"
+        | "ReturnValues"
+      >
+    > = {}
+  ): Promise<T | undefined> {
+    const params: UpdateCommandInput = {
       TableName: tableName,
       Key: key,
       UpdateExpression: updateExpression,
       ExpressionAttributeValues: expressionAttributeValues,
-      ReturnValues: "ALL_NEW",
+      ReturnValues: "ALL_NEW" as ReturnValue,
       ...options,
     };
 
     const command = new UpdateCommand(params);
     const result = await dynamoDbClient.send(command);
-    return result.Attributes;
+    return result.Attributes as T | undefined;
   },
 
   /**
@@ -148,14 +171,17 @@ export default {
    * @param options - Scan options including filters
    * @returns The scan results
    */
-  async scan(tableName: string, options: Record<string, any> = {}) {
-    const params = {
+  async scan<T = Record<string, any>>(
+    tableName: string,
+    options: Partial<Omit<ScanCommandInput, "TableName">> = {}
+  ): Promise<T[]> {
+    const params: ScanCommandInput = {
       TableName: tableName,
       ...options,
     };
 
     const command = new ScanCommand(params);
     const result = await dynamoDbClient.send(command);
-    return result.Items || [];
+    return (result.Items || []) as T[];
   },
 };
